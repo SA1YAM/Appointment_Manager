@@ -1,0 +1,529 @@
+openapi: 3.0.3
+info:
+  title: AppointmentManager - RestAPI 
+  description: |-
+    This a document for the Rest API used for CRUD opeartions in backend in BlogLite. Token based Authentication is used for protection of API.
+  version: 1.0.0
+  
+servers:
+  - url: http://127.0.0.1:5000
+tags: 
+  - name: Users
+    description: Request methods for Users
+  - name: MyProfile
+    description: Request methods for MyProfile
+  - name: Appointments
+    description: Request methods for Appointments
+  - name: Search
+    description: Request methods for Search
+  - name: Exportcsv
+    description: Request methods for Exportcsv
+
+paths:
+  /api/user:
+    post:
+      tags:
+        - Users
+      summary: Create user
+      description: This can be done by signing up.
+      requestBody:
+        description: Request Body
+        required: True
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: theUser
+                full_name:
+                  type: string
+                  example: John wick
+                email:
+                  type: string
+                  example: john@email.com
+                Password:
+                  type: string
+                  example: '12345'
+                dob:
+                  type: string
+                  description: Date of birth
+                  format: date
+                  example: 1996-07-02 
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_fields'  
+                       
+        '400':
+          description: Bad Request
+        '409':
+          description: Invalid details
+          
+    put:
+      tags:
+        - Users
+      summary: Create user
+      description: This can be done by signing up.
+      security: 
+        - cookieAuth: []
+      requestBody:
+        description: Request Body
+        required: True
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: theUser
+                oldPassword:
+                  type: string
+                  example: '*****'
+                newPassword:
+                  type: string
+                  example: '*******'
+                  
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_fields'  
+                       
+        '400':
+          description: Bad Request
+        '409':
+          description: Invalid details
+                
+    get:
+      tags:
+        - Users
+      summary: Get user
+      description: Returns the current user
+      security: 
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_fields'          
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      security: 
+        - cookieAuth: []
+#      requestBody:
+#        description: Request Body
+#        required: True
+#        content:
+#          application/json:
+#            schema:
+#              type: object
+#              properties:
+#                username:
+#                  type: string
+#                  example: theUser
+#                full_name:
+#                  type: string
+#                  example: John wick
+#                email:
+#                  type: string
+#                  example: john@email.com
+#                Password:
+#                  type: string
+#                  example: '12345'
+#                dob:
+#                  type: string
+#                  description: Date of birth
+#                  format: date
+#                  example: 1996-07-02 
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+          
+  /api/myprofile:
+    get:
+      tags:
+        - MyProfile
+      summary: Get details for current user profile
+      description: Returns the current user
+      security: 
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_fields1'          
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+          
+  /api/appointment:
+    post:
+      tags:
+        - Appointments
+      summary: Create Appointment
+      description: Creation of Appointment
+      security: 
+        - cookieAuth: []
+      requestBody:
+        description: Request Body
+        required: True
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: appointment title
+                client:
+                  type: string
+                  example: client name
+                date:
+                  type: string
+                  example: 2023/04/25
+                time:
+                  type: string
+                  example: 11:30
+                remarks:
+                  type: string
+                  example: remarks for appointment
+                  
+
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointment_fields'
+                  
+
+                       
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+          
+  /api/appointment/{appointment_id}:
+    parameters:
+      - in: path
+        name: appointment_id
+        schema:
+          type: integer
+        required: true
+        description: Appointment ID
+    put:
+      tags:
+        - Appointments
+      summary: Edit Post
+      description: Modification of Blog
+      security: 
+        - cookieAuth: []
+      requestBody:
+        description: Request Body
+        required: True
+        content:
+           application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: appointment title
+                client:
+                  type: string
+                  example: client name
+                date:
+                  type: string
+                  example: 2023/04/25
+                time:
+                  type: string
+                  example: 11:30
+                remarks:
+                  type: string
+                  example: remarks for appointment
+                  
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointment_fields'  
+                       
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+          
+    get:
+      tags:
+        - Appointments
+      summary: Get appointment details
+      description: Returns the appointment by appointment id
+      security: 
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appointment_fields'          
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+
+    delete:
+      tags:
+        - Appointments
+      summary: Delete Post
+      description: Deletes the post
+      security: 
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+          
+  /api/search:
+    get:
+      tags:
+        - Search
+      summary: Get all the appointments
+      description: Returns the list of appointments
+      security: 
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items: 
+                  $ref: '#/components/schemas/appointment_fields'    
+                  
+                    
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+
+  /api/export:
+    get:
+      tags:
+        - Exportcsv
+      summary: Exports a csv file
+      description: A csv file containing all the appointments created is mailed to the user. this job is a user triggered backend job
+      security: 
+        - cookieAuth: []
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: A zip file has been sent your email
+        '400':
+          description: Bad Request
+        '401':
+          description: Authentication Failed
+          
+components:
+  schemas:
+    User:
+      required:
+        - id
+        - username
+        - email
+        - full_name
+        - password
+        - dob
+        - created_at
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theUser
+        full_name:
+          type: string
+          example: John wick
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: '12345'
+        dob:
+          type: string
+          description: Date of birth
+          format: date
+          example: 1996-07-02 
+        created_at:
+          type: string
+          description: Timestamp of the user creation
+          format: date-time
+          example: 2020-07-02 12:32:12
+        appointments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Appointment'
+          description: appointments created by user
+
+          
+    Appointment:
+      required:
+        - appointment_id
+        - title
+        - client
+        - scheduled_time
+        - remarks
+        - user_id
+        
+      type: object
+      properties:
+        appointment_id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: appointment title
+        client:
+          type: string
+          example: user1
+        scheduled_time:
+          type: string
+          description: scheduled time of the appointment
+          format: date-time
+          example: 2020-07-02 12:32:12
+        remarks:
+          type: string
+          example: remarks for appointment
+        user_id:
+          type: integer
+          description: id of User(Foreign Key)
+          format: int64
+          example: 10
+          
+    user_fields:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theUser
+        email:
+          type: string
+          example: john@email.com
+        dob:
+          type: string
+          description: Date of birth
+          format: date-time
+          example: 02/07/1996 00:00
+        errors:
+          type: array
+          items:
+            type: string
+            nullable: True
+          example: null
+          
+    user_fields1:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theUser
+        appointments:
+          type: array
+          items:
+            $ref: '#/components/schemas/appointment_fields'
+          description: appointments created by user
+        total_appointments:
+          type: integer
+          description: the count of appointments that the user has created
+          example: 8
+          
+    appointment_fields:
+      type: object
+      properties:
+        appointment_id:
+          type: integer
+          format: int64
+          example: 10
+        title:
+          type: string
+          example: appointment title
+        client:
+          type: string
+          example: user
+        remarks:
+          type: string
+          description: remarks for appointment
+        scheduled_time:
+          type: string
+          description: scheduled time of the appointment
+          format: date-time
+          example: 2020-07-02 12:32:12
+        user_id:
+          type: integer
+          description: id of User(Foreign Key)
+          format: int64
+          example: 10
+        errors:
+          type: array
+          items:
+            type: string
+            nullable: True
+          example: null
+            
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie       
+      name: session  
