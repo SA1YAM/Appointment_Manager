@@ -6,7 +6,11 @@ Readme
 
 2. Please run all the servers in a linux based environment in windows use wsl.
 
-3. Boot te servers for flask, celery-worker, celery-beat & redis.
+3. Boot the servers for flask, celery-worker, celery-beat & redis by opening four terminals and type the following commands.
+	a> python3 main.py
+	b> celery -A main.celery worker -l info
+	c> celery -A main.celery beat --max-interval 60 -l info
+	d> redis-server
 
 4. Please run the main.py file which is placed in the ProjectFolder, ProjectFolder is placed in the root directory of the zip file.
 
